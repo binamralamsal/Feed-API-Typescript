@@ -54,6 +54,7 @@ class FeedRoutes implements Routes {
       checkSchema(postBodySchema),
       this.feedController.updatePost
     );
+    this.router.delete("/post/:postId", this.feedController.deletePost);
   }
 }
 

@@ -1,8 +1,16 @@
+import fs from "fs";
+import path from "path";
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";
 
+import { validationResult } from "express-validator";
 import Post from "../models/post.model";
 import HttpException from "../exceptions/HttpException";
+
+const clearImage = (imagePath: string) => {
+  fs.unlink(imagePath, (error) => {
+    throw error;
+  });
+};
 
 class FeedController {
   /**
@@ -11,8 +19,20 @@ class FeedController {
    * @access  Public
    */
   public async getPosts(req: Request, res: Response) {
-    const posts = await Post.find({});
-    res.status(200).json({ posts });
+    const currentPage = +(req.query.page || 1);
+    const perPage = 5;
+    const totalItems = await Post.countDocuments();
+
+    const posts = await Post.find({})
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+    res.status(200).json({
+      hasPrevious: currentPage > 1,
+      hasNext: currentPage < Math.ceil(totalItems / perPage),
+      posts,
+      totalItems,
+      currentPage,
+    });
   }
 
   /**
@@ -59,7 +79,7 @@ class FeedController {
 
   /**
    * @desc    Update specific post
-   * @route   PATCH /feed/post/:postId
+   * @route   PUT /feed/post/:postId
    * @access  Public
    */
   public async updatePost(req: Request, res: Response) {
@@ -80,10 +100,30 @@ class FeedController {
     if (!post) throw new HttpException(404, "Post not found!");
     if (!req.file) throw new HttpException(422, "No image provided");
 
+    if (req.file.path !== post.imageUrl) {
+      clearImage(post.imageUrl);
+    }
+
     post.title = req.body.title;
     post.content = req.body.content;
     post.imageUrl = req.file.path;
     await post.save();
+  }
+
+  /**
+   * @desc    Delete specific post
+   * @route   DELETE /post/:postId
+   * @access  Public
+   */
+  public async deletePost(req: Request, res: Response) {
+    const postId = req.params.postId;
+
+    const post = await Post.findById(postId);
+    if (!post) throw new HttpException(404, "Post not found!");
+
+    clearImage(post.imageUrl);
+    await post.remove();
+    res.status(200).json({ message: "Post deleted successfully" });
   }
 }
 
