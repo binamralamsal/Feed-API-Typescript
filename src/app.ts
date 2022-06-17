@@ -2,20 +2,14 @@ import express, { Application } from "express";
 import { connect, set } from "mongoose";
 
 import Routes from "./interfaces/routes.interface";
+import config from "./config";
 import errorMiddleware from "./middlewares/error.middleware";
 
 class App {
   public app: Application;
-  public env: string;
-  public port: string | number;
-  private readonly mongodbUri: string;
 
   constructor(routes: Routes[]) {
     this.app = express();
-    this.env = process.env.NODE_ENV || "development";
-    this.port = process.env.PORT || 4000;
-    this.mongodbUri =
-      process.env.MONGODB_URI || "mongodb://127.0.0.1/learn-node";
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
@@ -25,21 +19,21 @@ class App {
   public async listen() {
     await this.connectToMongodb();
 
-    this.app.listen(this.port, () => {
+    this.app.listen(config.PORT, () => {
       console.log(`=================================`);
-      console.log(`======= ENV: ${this.env} =======`);
-      console.log(`🚀 App listening on the port ${this.port}`);
+      console.log(`======= ENV: ${config.NODE_ENV} =======`);
+      console.log(`🚀 App listening on the port ${config.PORT}`);
       console.log(`=================================`);
     });
   }
 
-  private async connectToMongodb() {
+  public async connectToMongodb() {
     try {
-      if (this.env !== "production") {
+      if (config.NODE_ENV !== "production") {
         set("debug", true);
       }
 
-      await connect(this.mongodbUri);
+      await connect(config.MONGODB_URI);
     } catch (error) {
       process.exit(0);
     }
