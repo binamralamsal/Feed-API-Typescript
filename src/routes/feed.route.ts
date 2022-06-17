@@ -17,10 +17,11 @@ class FeedRoutes implements Routes {
   private initializeRoutes() {
     this.router.get("/posts", this.feedController.getPosts);
     this.router.post(
-      "/posts",
+      "/post",
       checkSchema(postBodySchema),
       this.feedController.createPost
     );
+    this.router.get("/post/:postId", this.feedController.getPost);
   }
 }
 

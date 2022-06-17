@@ -1,8 +1,9 @@
-import express, { Application } from "express";
+import path from "path";
 import { connect, set } from "mongoose";
+import express, { Application } from "express";
 
-import Routes from "./interfaces/routes.interface";
 import config from "./config";
+import Routes from "./interfaces/routes.interface";
 import errorMiddleware from "./middlewares/error.middleware";
 
 class App {
@@ -41,6 +42,10 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(express.json());
+    this.app.use(
+      "/images",
+      express.static(path.join(__dirname, "data", "images"))
+    );
   }
 
   private initializeRoutes(routes: Routes[]) {
