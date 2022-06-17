@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 import Post from "../models/post.model";
@@ -32,7 +32,10 @@ class FeedController {
       );
     }
 
-    const { title, content, imageUrl } = req.body;
+    if (!req.file) throw new HttpException(422, "No image provided");
+
+    const imageUrl = req.file.path;
+    const { title, content } = req.body;
     const post = await Post.create({ title, content, imageUrl });
 
     res.status(201).json({
@@ -52,6 +55,35 @@ class FeedController {
     if (!post) throw new HttpException(404, "Post not found!");
 
     res.status(200).json(post);
+  }
+
+  /**
+   * @desc    Update specific post
+   * @route   PATCH /feed/post/:postId
+   * @access  Public
+   */
+  public async updatePost(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new HttpException(
+        422,
+        "Validation failed, entered data is incorrect",
+        {
+          errors: errors.array(),
+        }
+      );
+    }
+
+    const postId = req.params.postId;
+
+    const post = await Post.findById(postId);
+    if (!post) throw new HttpException(404, "Post not found!");
+    if (!req.file) throw new HttpException(422, "No image provided");
+
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.imageUrl = req.file.path;
+    await post.save();
   }
 }
 
