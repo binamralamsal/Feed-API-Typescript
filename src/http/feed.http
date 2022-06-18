@@ -8,8 +8,22 @@ Content-Type: application/json
 
 {
   "title": "An awesome post",
-  "content": "An awesome post content"
+  "content": "An awesome post content",
+  "creator": "CREATOR ID"
 }
 
 ### Find specific post
 GET http://localhost:4000/feed/post/62ac546b895cca19ecaf98e4
+
+### Update specific post
+PUT http://localhost:4000/feed/post/62ac546b895cca19ecaf98e4
+Content-Type: application/json
+
+{
+    "title": "An awesome post",
+    "content": "An awesome post content",
+    "creator": "CREATOR ID"
+}
+
+### Delete specific post
+DELETE http://localhost:4000/feed/post/62ac546b895cca19ecaf98e4
