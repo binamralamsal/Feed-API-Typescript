@@ -1,11 +1,12 @@
-import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose";
+import { prop, modelOptions, Ref } from "@typegoose/typegoose";
+import UserSchema from "./user.model";
 
 @modelOptions({
   options: {
     customName: "Post",
   },
 })
-export class PostSchema {
+export default class PostSchema {
   @prop({ required: true })
   public title!: string;
 
@@ -15,8 +16,6 @@ export class PostSchema {
   @prop({ required: true })
   public content!: string;
 
-  @prop({ required: true })
-  public creator!: string;
+  @prop({ ref: () => UserSchema, required: true })
+  public creator!: Ref<UserSchema>;
 }
-
-export default getModelForClass(PostSchema);

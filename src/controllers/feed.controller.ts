@@ -2,7 +2,7 @@ import fs from "fs";
 import { Request, Response } from "express";
 
 import { validationResult } from "express-validator";
-import Post from "../models/post.model";
+import { Post } from "../models";
 import HttpException from "../exceptions/HttpException";
 
 const clearImage = (imagePath: string) => {
@@ -55,7 +55,14 @@ class FeedController {
 
     const imageUrl = req.file.path;
     const { title, content } = req.body;
-    const post = await Post.create({ title, content, imageUrl });
+    const post = await Post.create({
+      title,
+      content,
+      imageUrl,
+      creator: req.user,
+    });
+    req.user?.posts.push(post);
+    await req.user?.save();
 
     res.status(201).json({
       message: "Post created successfully",
@@ -95,7 +102,10 @@ class FeedController {
 
     const postId = req.params.postId;
 
-    const post = await Post.findById(postId);
+    const post = await Post.findOne({
+      _id: postId,
+      creator: req.user,
+    });
     if (!post) throw new HttpException(404, "Post not found!");
     if (!req.file) throw new HttpException(422, "No image provided");
 
@@ -117,11 +127,16 @@ class FeedController {
   public async deletePost(req: Request, res: Response) {
     const postId = req.params.postId;
 
-    const post = await Post.findById(postId);
+    const post = await Post.findOne({
+      _id: postId,
+      creator: req.user,
+    });
     if (!post) throw new HttpException(404, "Post not found!");
 
     clearImage(post.imageUrl);
     await post.remove();
+    req.user?.posts.pull(postId);
+
     res.status(200).json({ message: "Post deleted successfully" });
   }
 }

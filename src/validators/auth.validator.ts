@@ -1,5 +1,5 @@
 import { Schema } from "express-validator";
-import User from "../models/user.model";
+import { User } from "../models";
 
 const signupBodySchema: Schema = {
   email: {

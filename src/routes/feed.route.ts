@@ -44,18 +44,28 @@ class FeedRoutes implements Routes {
     this.router.get("/posts", authMiddleware, this.feedController.getPosts);
     this.router.post(
       "/post",
+      authMiddleware,
       checkSchema(postBodySchema),
       upload.single("image"),
       this.feedController.createPost
     );
-    this.router.get("/post/:postId", this.feedController.getPost);
+    this.router.get(
+      "/post/:postId",
+      authMiddleware,
+      this.feedController.getPost
+    );
     this.router.put(
       "/post/:postId",
+      authMiddleware,
       checkSchema(postBodySchema),
       upload.single("image"),
       this.feedController.updatePost
     );
-    this.router.delete("/post/:postId", this.feedController.deletePost);
+    this.router.delete(
+      "/post/:postId",
+      authMiddleware,
+      this.feedController.deletePost
+    );
   }
 }
 

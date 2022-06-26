@@ -1,14 +1,15 @@
 import {
   DocumentType,
+  modelOptions,
   pre,
   prop,
   Ref,
-  getModelForClass,
 } from "@typegoose/typegoose";
 import bcrypt from "bcryptjs";
-import { PostSchema } from "./post.model";
+import PostSchema from "./post.model";
+import mongoose from "mongoose";
 
-@pre<UserClass>("save", async function (next) {
+@pre<UserSchema>("save", async function (next) {
   if (!this.isModified("password")) {
     next();
   }
@@ -16,7 +17,12 @@ import { PostSchema } from "./post.model";
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
 })
-export class UserClass {
+@modelOptions({
+  options: {
+    customName: "User",
+  },
+})
+export default class UserSchema {
   @prop({ required: true, unique: true })
   public email!: string;
 
@@ -29,8 +35,8 @@ export class UserClass {
   @prop({ required: true, default: "I am new" })
   public status!: string;
 
-  @prop({ ref: () => PostSchema, default: [] })
-  public posts!: Ref<PostSchema>[];
+  @prop({ ref: () => PostSchema, default: [], required: true })
+  public posts!: mongoose.Types.Array<Ref<PostSchema>>;
 
   @prop()
   public resetToken?: string;
@@ -39,18 +45,19 @@ export class UserClass {
   public resetTokenExpiration?: Date;
 
   public async comparePassword(
-    this: DocumentType<UserClass>,
+    this: DocumentType<UserSchema>,
     password: string
   ) {
     return await bcrypt.compare(password, this.password);
   }
 
-  public async updatePassword(this: DocumentType<UserClass>, password: string) {
+  public async updatePassword(
+    this: DocumentType<UserSchema>,
+    password: string
+  ) {
     this.password = password;
     this.resetToken = undefined;
     this.resetTokenExpiration = undefined;
     await this.save();
   }
 }
-
-export default getModelForClass(UserClass);

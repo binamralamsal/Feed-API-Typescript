@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import HttpException from "../exceptions/HttpException";
 import config from "../config";
-import User from "../models/user.model";
+import { User } from "../models";
 import { DataStoredInToken } from "../interfaces/auth.interface";
 
 const authMiddleware = async (

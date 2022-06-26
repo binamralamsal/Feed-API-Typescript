@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import HttpException from "../exceptions/HttpException";
-import User from "../models/user.model";
+import { User } from "../models";
 import generateToken from "../utils/generateToken";
 
 class AuthController {
