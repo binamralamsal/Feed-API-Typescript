@@ -1,5 +1,6 @@
 ### Get all posts
 GET http://localhost:4000/feed/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbmFtcmFsYW1zYWxAZ21haWwuY29tIiwiX2lkIjoiNjJhZDRlMDg3NmEwZjE0OWJkNmVkYzE5IiwiaWF0IjoxNjU2MjMwNDEwLCJleHAiOjE2NTg4MjI0MTB9.kbmJtYiZwP0TOrerLG3ZIupNc5D4C_T7H5jVU8fgvAM
 
 
 ### Create a post

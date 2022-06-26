@@ -6,6 +6,7 @@ import FeedController from "../controllers/feed.controller";
 import { postBodySchema } from "../validators/feed.validator";
 import multer from "multer";
 import path from "path";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -40,7 +41,7 @@ class FeedRoutes implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get("/posts", this.feedController.getPosts);
+    this.router.get("/posts", authMiddleware, this.feedController.getPosts);
     this.router.post(
       "/post",
       checkSchema(postBodySchema),

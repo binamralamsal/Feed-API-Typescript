@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node .",
-    "dev": "ts-node-dev . --respawn --transpile-only"
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node --files src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/mongoose": "^5.11.97",
     "@types/multer": "^1.4.7",
-    "@types/node": "^18.0.0"
+    "@types/node": "^18.0.0",
+    "nodemon": "^2.0.18"
   }
 }

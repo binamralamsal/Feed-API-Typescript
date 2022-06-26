@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import config from "../config";
+import { DataStoredInToken } from "../interfaces/auth.interface";
 
-const generateToken = (object: {}) => {
-  return jwt.sign(object, config.JWT_SECRET, {
+const generateToken = (data: DataStoredInToken) => {
+  return jwt.sign(data, config.JWT_SECRET, {
     expiresIn: "30d",
   });
 };
