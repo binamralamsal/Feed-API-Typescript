@@ -33,4 +33,21 @@ const signupBodySchema: Schema = {
   },
 };
 
-export { signupBodySchema };
+const loginBodySchema: Schema = {
+  email: {
+    isEmail: true,
+    normalizeEmail: true,
+    errorMessage: "Please enter a valid email",
+  },
+  password: {
+    trim: true,
+    isLength: {
+      options: {
+        min: 6,
+      },
+    },
+    errorMessage: "Password must be at least 6 characters long",
+  },
+};
+
+export { signupBodySchema, loginBodySchema };

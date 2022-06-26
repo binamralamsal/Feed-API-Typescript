@@ -26,6 +26,30 @@ class AuthController {
 
     res.status(201).json(user);
   }
+
+  /**
+   * @desc    Login the user
+   * @route   POST /auth/login
+   * @access  Public
+   */
+  public async postLogin(req: Request, res: Response) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new HttpException(
+        401,
+        "Validation failed, entered data is incorrect",
+        {
+          errors: errors.array(),
+        }
+      );
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password)))
+      throw new HttpException(401, "Invalid email or password");
+  }
 }
 
 export default AuthController;
