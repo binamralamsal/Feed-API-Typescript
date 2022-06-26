@@ -19,7 +19,7 @@ class App {
 
   public async listen() {
     await this.connectToMongodb();
-
+    console.log("hhhhh");
     this.app.listen(config.PORT, () => {
       console.log(`=================================`);
       console.log(`======= ENV: ${config.NODE_ENV} =======`);

@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 import { Request, Response } from "express";
 
 import { validationResult } from "express-validator";

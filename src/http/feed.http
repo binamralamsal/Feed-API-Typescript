@@ -7,7 +7,7 @@ POST http://localhost:4000/feed/post
 Content-Type: application/json
 
 {
-  "title": "An awesome post",
+  "title": "An",
   "content": "An awesome post content",
   "creator": "CREATOR ID"
 }

@@ -3,7 +3,7 @@ import { Router } from "express";
 
 import Routes from "../interfaces/routes.interface";
 import AuthController from "../controllers/auth.controller";
-import { postBodySchema } from "../validators/feed.validator";
+import { signupBodySchema } from "../validators/auth.validator";
 
 class AuthRoutes implements Routes {
   public path = "/auth";
@@ -17,7 +17,7 @@ class AuthRoutes implements Routes {
   private initializeRoutes() {
     this.router.post(
       "/signup",
-      checkSchema(postBodySchema),
+      checkSchema(signupBodySchema),
       this.authController.postSignup
     );
   }

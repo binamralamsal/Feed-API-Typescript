@@ -6,7 +6,7 @@ import User from "../models/user.model";
 class AuthController {
   /**
    * @desc    Create a new user
-   * @route   POST /signup
+   * @route   POST /auth/signup
    * @access  Public
    */
   public async postSignup(req: Request, res: Response) {
